@@ -17,9 +17,5 @@ CHIP Mux {
     Nand (a=sel, b=sel, out=notSel);
     Nand (a=a, b=notSel, out=z1);
     Nand (a=b, b=sel, out=z2);
-    Nand (a=z1, b=z1, out=notZ1);
-    Nand (a=z2, b=z2, out=notZ2);
-    Nand (a=notZ1, b=notZ1, out=w1);
-    Nand (a=notZ2, b=notZ2, out=w2);
-    Nand (a=w1, b=w2, out=out);
+    Nand (a=z1, b=z2, out=out);
 }
