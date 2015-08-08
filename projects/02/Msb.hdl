@@ -1,0 +1,8 @@
+CHIP Msb {
+ IN in[16];
+ OUT out;
+
+ PARTS:
+ Not (in=in[15], out=z);
+ Not (in=z, out=out);
+}

@@ -1,0 +1,23 @@
+CHIP Bus16Way {
+  IN a;
+  OUT out[16];
+  
+  PARTS:
+  Not (in=a, out=notA);
+  Not (in=notA, out=out[0]);
+  Not (in=notA, out=out[1]);
+  Not (in=notA, out=out[2]);
+  Not (in=notA, out=out[3]);
+  Not (in=notA, out=out[4]);
+  Not (in=notA, out=out[5]);
+  Not (in=notA, out=out[6]);
+  Not (in=notA, out=out[7]);
+  Not (in=notA, out=out[8]);
+  Not (in=notA, out=out[9]);
+  Not (in=notA, out=out[10]);
+  Not (in=notA, out=out[11]);
+  Not (in=notA, out=out[12]);
+  Not (in=notA, out=out[13]);
+  Not (in=notA, out=out[14]);
+  Not (in=notA, out=out[15]);
+}
