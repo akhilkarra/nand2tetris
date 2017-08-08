@@ -1,0 +1,12 @@
+CHIP Bus3Way {
+	IN a, b, c;
+	OUT out[3];
+	
+	PARTS:
+	Not(in=a, out=notA);
+	Not(in=notA, out=out[0]);
+	Not(in=b, out=notB);
+	Not(in=notB, out=out[1]);
+	Not(in=c, out=notC);
+	Not(in=notC, out=out[2]);
+}

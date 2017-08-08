@@ -16,15 +16,11 @@ CHIP DMux8Way {
     OUT a, b, c, d, e, f, g, h;
 
     PARTS:
-    Not     (in=sel[0], out=notSel0);
-    Not     (in=sel[1], out=notSel1);
-    Not     (in=sel[2], out=notSel2);
-    And4Way (a=in, b=notSel2, c=notSel1, d=notSel0, out=a);
-    And4Way (a=in, b=notSel2, c=notSel1, d=sel[0], out=b);
-    And4Way (a=in, b=notSel2, c=sel[1], d=notSel0, out=c);
-    And4Way (a=in, b=notSel2, c=sel[1], d=sel[0], out=d);
-    And4Way (a=in, b=sel[2], c=notSel1, d=notSel0, out=e);
-    And4Way (a=in, b=sel[2], c=notSel1, d=sel[0], out=f);
-    And4Way (a=in, b=sel[2], c=sel[1], d=notSel0, out=g);
-    And4Way (a=in, b=sel[2], c=sel[1], d=sel[0], out=h);
+    DMux (in=in, sel=sel[2], a=dmuxInA, b=dmuxInB);
+    DMux (in=dmuxInA, sel=sel[1], a=dmuxInA1, b=dmuxInA2);
+    DMux (in=dmuxInB, sel=sel[1], a=dmuxInB1, b=dmuxInB2);
+    DMux (in=dmuxInA1, sel=sel[0], a=a, b=b);
+    DMux (in=dmuxInA2, sel=sel[0], a=c, b=d);
+    DMux (in=dmuxInB1, sel=sel[0], a=e, b=f);
+    DMux (in=dmuxInB2, sel=sel[0], a=g, b=h);
 }
