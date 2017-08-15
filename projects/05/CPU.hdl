@@ -39,5 +39,41 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    // A Register Input/Load
+    Mux16(a=instruction, b=ALUOutput, sel=instruction[15], out=inARegister);
+    Mux(a=true, b=instruction[5], sel=instruction[15], out=loadARegister);
+    ARegister(in=inARegister, load=loadARegister, out=outARegister);
+
+    // D Register Input/Load
+    Mux(a=false, b=instruction[4], sel=instruction[15], out=loadDRegister);
+    DRegister(in=ALUOutput, load=loadDRegister, out=D);
+
+    // ALU & outM Output
+    Mux(a=false, b=instruction[12], sel=instruction[15], out=AMSel);
+    Mux16(a=outARegister, b=inM, sel=AMSel, out=AM);
+    Mux(a=false, b=instruction[11], sel=instruction[15], out=zx);
+    Mux(a=false, b=instruction[10], sel=instruction[15], out=nx);
+    Mux(a=false, b=instruction[9], sel=instruction[15], out=zy);
+    Mux(a=false, b=instruction[8], sel=instruction[15], out=ny);
+    Mux(a=false, b=instruction[7], sel=instruction[15], out=f);
+    Mux(a=false, b=instruction[6], sel=instruction[15], out=no);
+    ALU(x=D, y=AM, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=ALUOutput, zr=zrOut, ng=ngOut);
+    And16(a=ALUOutput, b=ALUOutput, out=outM);
+
+    // writeM Output
+    Mux(a=false, b=instruction[3], sel=instruction[15], out=writeM);
+
+    // addressM Output
+    Bus16to15(in=outARegister, out=addressM);
+
+    // Program Counter & pc Output
+    Not(in=ngOut, out=JGE);
+    Xor(a=JGE, b=zrOut, out=JGT);
+    Not(in=zrOut, out=JNE);
+    Or(a=zrOut, b=ngOut, out=JLE);
+    Mux3(a=false, b=instruction[0..2], sel=instruction[15], out=PCSel);   
+    Mux8Way(a=false, b=JGT, c=zrOut, d=JGE, e=ngOut, f=JNE, g=JLE, h=true, sel=PCSel, out=PCLoad);
+    Not(in=PCLoad, out=PCInc);
+    PC(in=outARegister, load=PCLoad, inc=PCInc, reset=reset, out=pc16);
+    Bus16to15(in=pc16, out=pc);
 }
