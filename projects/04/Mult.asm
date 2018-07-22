@@ -6,54 +6,34 @@
 // Multiplies R0 and R1 and stores the result in R2.
 // (R0, R1, R2 refer to RAM[0], RAM[1], and RAM[2], respectively.)
 
-	// a = R0
-	@R0
-	D=M
-	@a
-	M=D
-
-	// b = R1
-	@R1
-	D=M
-	@b
-	M=D
-	
-	// product = 0
-	@product
-	M=0
+(START)
+    // R2 = 0
+    @R2
+    M=0
 
 (LOOP)
-	// If b == 0, jump to PRODUCT
-	@b
-	D=M
-	@PRODUCT
-	D; JEQ
+    // R2 = R0 + R2
+    @R0
+    D=M
+    
+    @R2
+    M=D+M
 
-	// product = product + a
-	@a
-	D=M
-	@product
-	M=D+M
+    // R1 = R1 - 1
+    @R1
+    M=M-1
 
-	// b = b - 1
-	@b
-	M=M-1
+    // Go back to LOOP if R1 > 0
+    D=M
 
-	// Go back to beginning of loop
-	@LOOP
-	0; JMP
+    @LOOP
+    D; JGT
 
-(PRODUCT)
-	// RAM[2] = product
-	@product
-	D=M
-	@R2
-	M=D
+    // Else, go to END
+    @END
+    0; JMP
 
-	// Jump to END
-	@END
-	0; JMP
-
+// Cautionary Infinite Loop
 (END)
-	@END
-	0; JMP
+    @END
+    0; JMP   

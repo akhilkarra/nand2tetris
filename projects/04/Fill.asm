@@ -11,60 +11,97 @@
 // "white" in every pixel;
 // the screen should remain fully clear as long as no key is pressed.
 
+// At the start, read the keyboard input
 (START)
-	// screen = SCREEN (16384)
-	@SCREEN
-	D=A
-	
-	@screen
-	M=D
+    // if KBD > 0: execute SCREEN-ON
+    @KBD
+    D=M
+    
+    @SCREEN-ON
+    D; JGT
 
-(KEYBOARD)
-	// Check status of Keyboard
-	@KBD
-	D=M
+    // else: execute SCREEN-OFF
+    @SCREEN-OFF
+    0; JMP
 
-	// If (KBD == 0) jump to WHITE
-	@WHITE
-	D; JEQ
+// When SCREEN-ON called, turn on all pixels of display. Then, go back to start
+(SCREEN-ON)
+    // screen = SCREEN (base address of Screen Memory Map)
+    @SCREEN
+    D=A
 
-	// Else jump to BLACK
-	@BLACK
-	0; JMP
+    @screen
+    M=D
+    
+    // counter = 8192
+    @8192
+    D=A
 
-(INCSCREEN)
-	// screen++
-	@screen
-	M=M+1
-	D=M	
+    @counter
+    M=D
 
-	// If ((KBD - screen == 0) jump to START
-	@KBD
-	D=A-D
-	
-	@START
-	D; JEQ
-	
-	// Else, jump to KEYBOARD
-	@KEYBOARD
-	0; JMP
+    // Loop through every memory register in the Screen Memory Map and set them to -1 (1111111111111111)
+    (ON-LOOP)
+        // screen = -1
+        @screen
+        A=M
+        M=-1
 
-(BLACK)
-	// Register[screen] = -1 
-	@screen
-	A=M
-	M=-1
+        // screen = screen + 1
+        @screen
+        M=M+1
 
-	// Jump to INCSCREEN
-	@INCSCREEN
-	0; JMP
+        // counter = counter - 1
+        @counter
+        M=M-1
 
-(WHITE)
-	// Register[screen] = 0
-	@screen
-	A=M
-	M=0
+        // Go back to ON-LOOP if counter is still greater than 0
+        D=M
 
-	// Jump to INCSCREEN
-	@INCSCREEN
-	0; JMP
+        @ON-LOOP
+        D; JGT
+    
+    // Jump back to START after executing loop
+    @START
+    0; JMP
+
+// When SCREEN-OFF called, turn off all pixels of display. Then, go back to start
+(SCREEN-OFF)
+    // screen = SCREEN (base address of Screen Memory Map)
+    @SCREEN
+    D=A
+
+    @screen
+    M=D
+    
+    // counter = 8192
+    @8192
+    D=A
+
+    @counter
+    M=D
+
+    // Loop through every memory register in the Screen Memory Map and set them to 0 (0000000000000000)
+    (OFF-LOOP)
+        // screen = 0
+        @screen
+        A=M
+        M=0
+
+        // screen = screen + 1
+        @screen
+        M=M+1
+
+        // counter = counter - 1
+        @counter
+        M=M-1
+
+        // Go back to OFF-LOOP if counter is still greater than 0
+        D=M
+
+        @OFF-LOOP
+        D; JGT
+    
+    // Jump back to START after executing loop
+    @START
+    0; JMP 
