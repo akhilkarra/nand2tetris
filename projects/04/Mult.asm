@@ -12,6 +12,13 @@
     M=0
 
 (LOOP)
+    // Go to END if R1 = 0
+    @R1
+    D=M
+
+    @END
+    D; JEQ
+
     // R2 = R0 + R2
     @R0
     D=M
@@ -23,14 +30,8 @@
     @R1
     M=M-1
 
-    // Go back to LOOP if R1 > 0
-    D=M
-
+    // Go back to LOOP
     @LOOP
-    D; JGT
-
-    // Else, go to END
-    @END
     0; JMP
 
 // Cautionary Infinite Loop
